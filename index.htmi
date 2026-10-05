@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我的網頁作品集 - 闖關入口</title>
+  <style>
+    /* -----------------------------------
+       重置與基礎樣式 (CSS Reset & Base)
+    ----------------------------------- */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, "Microsoft JhengHei", Roboto, sans-serif;
+      background: radial-gradient(circle at top, #1e293b 0%, #0f172a 60%, #020617 100%);
+      color: #f8fafc;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 3rem 1rem;
+      overflow-x: hidden;
+    }
+
+    /* 頁面主要內容區域 */
+    .container {
+      width: 100%;
+      max-width: 960px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* -----------------------------------
+       正中央個人卡片 (Profile Card)
+    ----------------------------------- */
+    .profile-card {
+      text-align: center;
+      background: rgba(30, 41, 59, 0.6);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: 24px;
+      padding: 2.5rem 2rem;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 0 30px rgba(14, 165, 233, 0.15), inset 0 0 15px rgba(56, 189, 248, 0.1);
+      margin-bottom: 3rem;
+      position: relative;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .profile-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 45px rgba(14, 165, 233, 0.25), inset 0 0 20px rgba(56, 189, 248, 0.2);
+    }
+
+    .avatar-container {
+      position: relative;
+      width: 130px;
+      height: 130px;
+      margin: 0 auto 1.25rem;
+    }
+
+    /* 炫酷的光環流轉效果 */
+    .avatar-container::before {
+      content: '';
+      position: absolute;
+      top: -6px;
+      left: -6px;
+      right: -6px;
+      bottom: -6px;
+      background: linear-gradient(45deg, #00f2fe, #4facfe, #38bdf8, #0284c7);
+      border-radius: 50%;
+      z-index: -1;
+      filter: blur(8px);
+      opacity: 0.8;
+      animation: spin 6s linear infinite;
+    }
+
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+
+    .avatar {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #38bdf8;
+      background-color: #0f172a;
+    }
+
+    .profile-name {
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: #ffffff;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+    }
+
+    .profile-subtitle {
+      font-size: 0.95rem;
+      color: #94a3b8;
+      letter-spacing: 1px;
+    }
+
+    .badge {
+      display: inline-block;
+      margin-top: 0.8rem;
+      padding: 0.3rem 0.8rem;
+      background: rgba(14, 165, 233, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: #38bdf8;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    /* -----------------------------------
+       區塊標題 (Section Title)
+    ----------------------------------- */
+    .section-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #e2e8f0;
+      margin-bottom: 2rem;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-title::before,
+    .section-title::after {
+      content: '';
+      height: 2px;
+      width: 40px;
+      background: linear-gradient(90deg, transparent, #38bdf8);
+    }
+
+    .section-title::after {
+      background: linear-gradient(90deg, #38bdf8, transparent);
+    }
+
+    /* -----------------------------------
+       16 個關卡按鈕網格 (Grid Layout)
+    ----------------------------------- */
+    .grid-menu {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr); /* 桌面端預設 4 欄 */
+      gap: 1.25rem;
+      width: 100%;
+    }
+
+    /* 共通按鈕卡片基礎 */
+    .card-btn {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 1.25rem 1rem;
+      min-height: 105px;
+      border-radius: 16px;
+      text-decoration: none;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    /* --- 已解鎖按鈕 (Unlocked Buttons) --- */
+    .card-btn.unlocked {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      cursor: pointer;
+    }
+
+    .card-btn.unlocked .btn-tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #38bdf8;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .card-btn.unlocked .btn-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #f1f5f9;
+      margin-top: 0.5rem;
+      line-height: 1.4;
+    }
+
+    .card-btn.unlocked .status-icon {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      font-size: 0.85rem;
+      color: #10b981;
+      background: rgba(16, 185, 129, 0.15);
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* 炫酷的動態 Hover 懸停效果 (針對已解鎖) */
+    .card-btn.unlocked::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.2), transparent);
+      transition: left 0.6s ease;
+    }
+
+    .card-btn.unlocked:hover {
+      transform: translateY(-8px) scale(1.02);
+      border-color: #38bdf8;
+      box-shadow: 0 12px 25px rgba(14, 165, 233, 0.35), 0 0 15px rgba(56, 189, 248, 0.2);
+      background: linear-gradient(135deg, rgba(14, 165, 233, 0.2) 0%, rgba(15, 23, 42, 0.95) 100%);
+    }
+
+    .card-btn.unlocked:hover::before {
+      left: 100%;
+    }
+
+    .card-btn.unlocked:hover .btn-title {
+      color: #38bdf8;
+    }
+
+    /* --- 未解鎖/鎖定按鈕 (Locked Buttons) --- */
+    .card-btn.locked {
+      background: rgba(15, 23, 42, 0.4);
+      border: 1px dashed rgba(71, 85, 105, 0.4);
+      cursor: not-allowed;
+      opacity: 0.65;
+      filter: grayscale(0.8);
+    }
+
+    .card-btn.locked .btn-tag {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #64748b;
+    }
+
+    .card-btn.locked .btn-title {
+      font-size: 0.9rem;
+      color: #475569;
+      margin-top: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .card-btn.locked .lock-icon {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      font-size: 1rem;
+      opacity: 0.7;
+    }
+
+    /* 鎖定按鈕微幅抖動警示動畫 */
+    .card-btn.locked:hover {
+      transform: translateY(-2px);
+      border-color: rgba(100, 116, 139, 0.8);
+      background: rgba(30, 41, 59, 0.3);
+      animation: lockShake 0.4s ease-in-out;
+    }
+
+    @keyframes lockShake {
+      0%, 100% { transform: translateX(0) translateY(-2px); }
+      20%, 60% { transform: translateX(-4px) translateY(-2px); }
+      40%, 80% { transform: translateX(4px) translateY(-2px); }
+    }
+
+    /* -----------------------------------
+       頁尾 (Footer)
+    ----------------------------------- */
+    footer {
+      margin-top: 4rem;
+      color: #64748b;
+      font-size: 0.85rem;
+      text-align: center;
+      letter-spacing: 0.5px;
+    }
+
+    /* -----------------------------------
+       響應式斷點設計 (RWD)
+    ----------------------------------- */
+    @media (max-width: 860px) {
+      .grid-menu {
+        grid-template-columns: repeat(2, 1fr); /* 平板改為 2 欄 */
+        gap: 1rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 2rem 0.8rem;
+      }
+
+      .profile-card {
+        padding: 2rem 1.25rem;
+        border-radius: 20px;
+      }
+
+      .grid-menu {
+        grid-template-columns: 1fr; /* 手機端改為單欄，好按又清晰 */
+      }
+
+      .card-btn {
+        min-height: 90px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- 正中央個人大頭貼與名字資訊 -->
+    <section class="profile-card">
+      <div class="avatar-container">
+        <!-- 預設淺藍色大頭貼，後續可自行替換成 img/avatar.jpg -->
+        <img class="avatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=BlueHero" alt="個人大頭貼">
+      </div>
+      <h1 class="profile-name">26122148 林玟彤</h1>
+      <p class="profile-subtitle">網頁程式設計 · 作品集闖關地圖</p>
+      <span class="badge">LV. 2 / 16 通關中</span>
+    </section>
+
+    <h2 class="section-title">週次作業關卡</h2>
+
+    <!-- 16 個排列整齊的關卡按鈕 -->
+    <main class="grid-menu">
+
+      <!-- Week 1: 已解鎖 -->
+      <a href="w1/index.html" class="card-btn unlocked">
+        <span class="btn-tag">STAGE 01</span>
+        <div class="btn-title">Week 1-數位名片</div>
+        <span class="status-icon">✓</span>
+      </a>
+
+      <!-- Week 2: 已解鎖 -->
+      <a href="w2/index.html" class="card-btn unlocked">
+        <span class="btn-tag">STAGE 02</span>
+        <div class="btn-title">Week 2-數位名片</div>
+        <span class="status-icon">✓</span>
+      </a>
+
+      <!-- Week 3 ~ 16: 未解鎖 (灰色 + 鎖頭 + 無連結) -->
+      <div class="card-btn locked">
+        <span class="btn-tag">STAGE 03</span>
+        <div class="btn-title">尚未解鎖</div>
+        <span class="lock-icon">🔒</span>
+      </div>
+
+      <div class="card-btn locked">
+        <span class="btn-tag">STAGE 04</span>
+        <div class="btn-title">尚未解鎖</div>
+        <span class="lock-icon">🔒</span>
+      </div>
+
+      <div class="card-btn locked">
+        <span class="btn-tag">STAGE 05</span>
+        <div class="btn-title">尚未解鎖</div>
+        <span class="lock-icon">🔒</span>
+      </div>
+
+      <div class="card-btn locked">
+        <span class="btn-tag">STAGE 06</span>
+        <div class="btn-title">尚未解鎖</div>
+        <span class="lock-icon">🔒</span>
+      </div>
+
+      <div class="card-btn locked">
+        <span class="btn-tag">STAGE 07</span>
+        <div class="btn-title">尚未解鎖</div>
+        <span class="lock-icon">🔒</span>
+      </div>
+
+      <div class="card-btn locked">
+        <span class="btn-tag">STAGE 08</span>
+        <div class="btn-title">尚未解鎖</div>
+        <span class="lock-icon">🔒</span>
+      </div>
+
+      <div class="card-btn locked">
+        <span class="btn-tag">STAGE 09</span>
+        <div class="btn-title">尚未解鎖</div>
+        <span class="lock-icon">🔒</span>
+      </div>
+
+      <div class="card-btn locked">
+        <span class="btn-tag">STAGE 10</span>
+        <div class="btn-title">尚未解鎖</div>
+        <span class="lock-icon">🔒</span>
+      </div>
+
+      <div class="card-btn locked">
+        <span class="btn-tag">STAGE 11</span>
+        <div class="btn-title">尚未解鎖</div>
+        <span class="lock-icon">🔒</span>
+      </div>
+
+      <div class="card-btn locked">
+        <span class="btn-tag">STAGE 12</span>
+        <div class="btn-title">尚未解鎖</div>
+        <span class="lock-icon">🔒</span>
+      </div>
+
+      <div class="card-btn locked">
+        <span class="btn-tag">STAGE 13</span>
+        <div class="btn-title">尚未解鎖</div>
+        <span class="lock-icon">🔒</span>
+      </div>
+
+      <div class="card-btn locked">
+        <span class="btn-tag">STAGE 14</span>
+        <div class="btn-title">尚未解鎖</div>
+        <span class="lock-icon">🔒</span>
+      </div>
+
+      <div class="card-btn locked">
+        <span class="btn-tag">STAGE 15</span>
+        <div class="btn-title">尚未解鎖</div>
+        <span class="lock-icon">🔒</span>
+      </div>
+
+      <div class="card-btn locked">
+        <span class="btn-tag">STAGE 16</span>
+        <div class="btn-title">尚未解鎖</div>
+        <span class="lock-icon">🔒</span>
+      </div>
+
+    </main>
+
+    <footer>
+      <p>&copy; Web Development Portfolio · Designed for Learning</p>
+    </footer>
+
+  </div>
+
+</body>
+</html>
